@@ -9,6 +9,7 @@
 #include <functional>
 #include <locale>
 #include <codecvt>
+#include <stdarg.h>
 
 #if defined( _WIN32 )
 #include <windows.h>

@@ -3,3 +3,6 @@
 /bin/win64/Debug/openvr_api64_d.lib
 /bin/win64/Debug/openvr_api64_d.pdb
 /bin/win64/Release/openvr_api64.lib
+bin/linux64/Debug/
+bin/linux64/Release/
+bin/linux64/libopenvr_api.a
