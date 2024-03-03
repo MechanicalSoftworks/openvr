@@ -1,5 +1,5 @@
 //========= Copyright Valve Corporation ============//
-#include <vrcore/strtools_public.h>
+#include <vrcommon/strtools_public.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,11 +9,18 @@
 #include <functional>
 #include <locale>
 #include <codecvt>
-#include <vrcore/assert.h>
 
 #if defined( _WIN32 )
 #include <windows.h>
 #endif
+
+static void AssertMsg(bool exp, const char* msg)
+{
+	if (!exp)
+	{
+		fprintf(stderr, msg);
+	}
+}
 
 #if defined( OSX ) || defined( LINUX )
 //-----------------------------------------------------------------------------
