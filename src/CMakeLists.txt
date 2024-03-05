@@ -1,5 +1,5 @@
 # Project name.
-project(openvr_api)
+project(openvr_api VERSION "${OPENVR_VERSION}")
 
 set( LIBNAME "openvr_api" )
 set(OPENVR_HEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../headers)
@@ -23,7 +23,12 @@ elseif(WIN32)
 endif()
 
 # Add include folders.
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../headers ${CMAKE_CURRENT_SOURCE_DIR}/vrcommon)
+include_directories(
+	${CMAKE_CURRENT_SOURCE_DIR}
+	$<BUILD_INTERFACE:${OPENVR_HEADER_DIR}>
+    $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}/openvr>
+	${CMAKE_CURRENT_SOURCE_DIR}/vrcommon
+)
 
 if(USE_CUSTOM_LIBCXX)
 	link_directories(
@@ -99,9 +104,13 @@ if(USE_CUSTOM_LIBCXX)
 endif()
 
 target_link_libraries(${LIBNAME} ${EXTRA_LIBS} ${CMAKE_DL_LIBS})
-target_include_directories(${LIBNAME} PUBLIC ${OPENVR_HEADER_DIR})
+target_include_directories(${LIBNAME}
+	PUBLIC
+		$<BUILD_INTERFACE:${OPENVR_HEADER_DIR}>
+		$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}/openvr>
+)
 
-install(TARGETS ${LIBNAME})
+install(TARGETS ${LIBNAME} EXPORT ${LIBNAME}Targets)
 install(FILES ${PUBLIC_HEADER_FILES} DESTINATION include/openvr)
 
 # Generate a .pc file for linux environments
@@ -114,3 +123,21 @@ if(PLATFORM_NAME MATCHES "linux")
         install(FILES ${OPENVR_PC} DESTINATION "${INSTALL_PKGCONFIG_DIR}")
     endif()
 endif()
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    ${LIBNAME}ConfigVersion.cmake
+    VERSION ${PACKAGE_VERSION}
+    COMPATIBILITY ExactVersion
+)
+
+install(EXPORT ${LIBNAME}Targets
+	FILE ${LIBNAME}Targets.cmake
+	DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/${LIBNAME}
+)
+
+configure_file(${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/${LIBNAME}Config.cmake @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${LIBNAME}Config.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/${LIBNAME}ConfigVersion.cmake"
+	DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/${LIBNAME}
+)
