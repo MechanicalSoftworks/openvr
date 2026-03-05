@@ -5,7 +5,7 @@
 #include <vrcore/pathtools_public.h>
 #include <vrcore/sharedlibtools_public.h>
 #include <vrcore/envvartools_public.h>
-#include "hmderrors_public.h"
+#include <vrcore/hmderrors_public.h>
 #include <vrcore/strtools_public.h>
 #include <vrcore/vrpathregistry_public.h>
 #include <mutex>
